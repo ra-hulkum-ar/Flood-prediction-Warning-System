@@ -1,0 +1,8 @@
+Flask
+gunicorn
+numpy
+matplotlib
+datetime
+pytz
+pyreproj
+http.client
