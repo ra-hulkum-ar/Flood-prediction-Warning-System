@@ -53,7 +53,7 @@ python -m http.server 8000
 ```
 
 Now open:  
-👉 **http://localhost:8000**
+👉 **(https://ra-hulkum-ar.github.io/Flood-prediction-Warning-System/)**
 
 ### 3. Use the Demo  
 - Tap **Get Started**  
