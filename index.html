@@ -1,0 +1,2441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FloodSafe India - Advanced Flood Prediction &amp; Alert System</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+:root {
+  --color-white: rgba(255, 255, 255, 1);
+  --color-black: rgba(0, 0, 0, 1);
+  --color-cream-50: rgba(252, 252, 249, 1);
+  --color-cream-100: rgba(255, 255, 253, 1);
+  --color-gray-200: rgba(245, 245, 245, 1);
+  --color-gray-300: rgba(167, 169, 169, 1);
+  --color-gray-400: rgba(119, 124, 124, 1);
+  --color-slate-500: rgba(98, 108, 113, 1);
+  --color-brown-600: rgba(94, 82, 64, 1);
+  --color-charcoal-700: rgba(31, 33, 33, 1);
+  --color-charcoal-800: rgba(38, 40, 40, 1);
+  --color-slate-900: rgba(19, 52, 59, 1);
+  --color-teal-300: rgba(50, 184, 198, 1);
+  --color-teal-400: rgba(45, 166, 178, 1);
+  --color-teal-500: rgba(33, 128, 141, 1);
+  --color-teal-600: rgba(29, 116, 128, 1);
+  --color-teal-700: rgba(26, 104, 115, 1);
+  --color-teal-800: rgba(41, 150, 161, 1);
+  --color-red-400: rgba(255, 84, 89, 1);
+  --color-red-500: rgba(192, 21, 47, 1);
+  --color-orange-400: rgba(230, 129, 97, 1);
+  --color-orange-500: rgba(168, 75, 47, 1);
+  --color-brown-600-rgb: 94, 82, 64;
+  --color-teal-500-rgb: 33, 128, 141;
+  --color-slate-900-rgb: 19, 52, 59;
+  --color-slate-500-rgb: 98, 108, 113;
+  --color-red-500-rgb: 192, 21, 47;
+  --color-red-400-rgb: 255, 84, 89;
+  --color-orange-500-rgb: 168, 75, 47;
+  --color-orange-400-rgb: 230, 129, 97;
+  --color-bg-1: rgba(59, 130, 246, 0.08);
+  --color-bg-2: rgba(245, 158, 11, 0.08);
+  --color-bg-3: rgba(34, 197, 94, 0.08);
+  --color-bg-4: rgba(239, 68, 68, 0.08);
+  --color-bg-5: rgba(147, 51, 234, 0.08);
+  --color-bg-6: rgba(249, 115, 22, 0.08);
+  --color-bg-7: rgba(236, 72, 153, 0.08);
+  --color-bg-8: rgba(6, 182, 212, 0.08);
+  --color-background: var(--color-cream-50);
+  --color-surface: var(--color-cream-100);
+  --color-text: var(--color-slate-900);
+  --color-text-secondary: var(--color-slate-500);
+  --color-primary: var(--color-teal-500);
+  --color-primary-hover: var(--color-teal-600);
+  --color-primary-active: var(--color-teal-700);
+  --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+  --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-btn-primary-text: var(--color-cream-50);
+  --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-error: var(--color-red-500);
+  --color-success: var(--color-teal-500);
+  --color-warning: var(--color-orange-500);
+  --color-info: var(--color-slate-500);
+  --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+  --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
+  --focus-ring: 0 0 0 3px var(--color-focus-ring);
+  --focus-outline: 2px solid var(--color-primary);
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 24px;
+  --font-size-4xl: 30px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 550;
+  --font-weight-bold: 600;
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --radius-sm: 6px;
+  --radius-base: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-gray-400-rgb: 119, 124, 124;
+    --color-teal-300-rgb: 50, 184, 198;
+    --color-gray-300-rgb: 167, 169, 169;
+    --color-gray-200-rgb: 245, 245, 245;
+    --color-bg-1: rgba(29, 78, 216, 0.15);
+    --color-bg-2: rgba(180, 83, 9, 0.15);
+    --color-bg-3: rgba(21, 128, 61, 0.15);
+    --color-bg-4: rgba(185, 28, 28, 0.15);
+    --color-bg-5: rgba(107, 33, 168, 0.15);
+    --color-bg-6: rgba(194, 65, 12, 0.15);
+    --color-bg-7: rgba(190, 24, 93, 0.15);
+    --color-bg-8: rgba(8, 145, 178, 0.15);
+    --color-background: var(--color-charcoal-700);
+    --color-surface: var(--color-charcoal-800);
+    --color-text: var(--color-gray-200);
+    --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+    --color-primary: var(--color-teal-300);
+    --color-primary-hover: var(--color-teal-400);
+    --color-primary-active: var(--color-teal-800);
+    --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+    --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+    --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
+    --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+    --color-error: var(--color-red-400);
+    --color-success: var(--color-teal-300);
+    --color-warning: var(--color-orange-400);
+    --color-info: var(--color-gray-300);
+    --color-btn-primary-text: var(--color-slate-900);
+    --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+    --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-base);
+  background: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header & Navigation */
+.header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-16) var(--space-24);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-16);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.logo i {
+  font-size: var(--font-size-3xl);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  flex-wrap: wrap;
+}
+
+.language-selector {
+  padding: var(--space-8) var(--space-12);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.btn {
+  padding: var(--space-8) var(--space-16);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-btn-primary-text);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.btn-secondary {
+  background: var(--color-secondary);
+  color: var(--color-text);
+}
+
+.btn-secondary:hover {
+  background: var(--color-secondary-hover);
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(135deg, rgba(33, 128, 141, 0.1) 0%, rgba(50, 184, 198, 0.05) 100%);
+  padding: var(--space-32) var(--space-24);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(33, 128, 141, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.hero-content {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 {
+  font-size: var(--font-size-4xl);
+  margin-bottom: var(--space-16);
+  color: var(--color-text);
+}
+
+.hero p {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-24);
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: var(--space-24);
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+/* Cards */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  margin-bottom: var(--space-24);
+  box-shadow: var(--shadow-sm);
+}
+
+.card h2 {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--space-16);
+  color: var(--color-text);
+}
+
+.card h3 {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--space-12);
+  color: var(--color-text);
+}
+
+/* Grid Layouts */
+.grid {
+  display: grid;
+  gap: var(--space-24);
+}
+
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* Stats Cards */
+.stat-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-20);
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-icon {
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--space-12);
+}
+
+.stat-value {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-8);
+}
+
+.stat-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Alert Banner */
+.alert-banner {
+  background: rgba(var(--color-red-500-rgb), 0.1);
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-base);
+  padding: var(--space-16);
+  margin-bottom: var(--space-24);
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.alert-banner.warning {
+  background: rgba(var(--color-orange-500-rgb), 0.1);
+  border-color: var(--color-warning);
+}
+
+.alert-banner.info {
+  background: var(--color-bg-1);
+  border-color: var(--color-primary);
+}
+
+.alert-icon {
+  font-size: var(--font-size-2xl);
+  color: var(--color-error);
+}
+
+.alert-banner.warning .alert-icon {
+  color: var(--color-warning);
+}
+
+.alert-banner.info .alert-icon {
+  color: var(--color-primary);
+}
+
+/* Forms */
+.form-group {
+  margin-bottom: var(--space-16);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--space-8);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+}
+
+.form-control {
+  width: 100%;
+  padding: var(--space-12);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-base);
+}
+
+.form-control:focus {
+  outline: var(--focus-outline);
+  border-color: var(--color-primary);
+}
+
+/* Map Container */
+#map {
+  height: 500px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-card-border);
+}
+
+/* Chart Container */
+.chart-container {
+  position: relative;
+  height: 400px;
+  margin-top: var(--space-16);
+}
+
+/* Images */
+.info-image {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  margin: var(--space-16) 0;
+  border: 1px solid var(--color-card-border);
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-16);
+  margin: var(--space-16) 0;
+}
+
+.image-grid img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: var(--radius-base);
+  border: 1px solid var(--color-card-border);
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-block;
+  padding: var(--space-4) var(--space-12);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.status-safe {
+  background: rgba(var(--color-teal-500-rgb), 0.15);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+
+.status-warning {
+  background: rgba(var(--color-orange-500-rgb), 0.15);
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning);
+}
+
+.status-danger {
+  background: rgba(var(--color-red-500-rgb), 0.15);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+}
+
+/* Calculation Display */
+.calculation-box {
+  background: var(--color-bg-1);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-base);
+  padding: var(--space-16);
+  margin: var(--space-16) 0;
+  font-family: monospace;
+  font-size: var(--font-size-sm);
+}
+
+.calculation-step {
+  margin: var(--space-8) 0;
+  padding: var(--space-8);
+  background: rgba(var(--color-teal-500-rgb), 0.05);
+  border-radius: var(--radius-sm);
+}
+
+.formula {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  margin-bottom: var(--space-4);
+}
+
+/* Login Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-32);
+  max-width: 450px;
+  width: 90%;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-24);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: var(--font-size-2xl);
+  cursor: pointer;
+  color: var(--color-text-secondary);
+}
+
+/* Notification */
+.notification {
+  position: fixed;
+  top: 80px;
+  right: var(--space-24);
+  background: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-base);
+  padding: var(--space-16);
+  box-shadow: var(--shadow-lg);
+  z-index: 3000;
+  display: none;
+  max-width: 350px;
+}
+
+.notification.active {
+  display: block;
+}
+
+.notification.error {
+  border-left-color: var(--color-error);
+}
+
+.notification.warning {
+  border-left-color: var(--color-warning);
+}
+
+.notification.success {
+  border-left-color: var(--color-success);
+}
+
+/* Offline Indicator */
+.offline-indicator {
+  position: fixed;
+  bottom: var(--space-16);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-charcoal-800);
+  color: var(--color-white);
+  padding: var(--space-12) var(--space-24);
+  border-radius: var(--radius-base);
+  box-shadow: var(--shadow-lg);
+  display: none;
+  z-index: 3000;
+}
+
+.offline-indicator.active {
+  display: block;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .nav-container {
+    flex-direction: column;
+  }
+  
+  .grid-2, .grid-3 {
+    grid-template-columns: 1fr;
+  }
+  
+  .weather-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  #map {
+    height: 350px;
+  }
+  
+  .chart-container {
+    height: 300px;
+  }
+}
+
+/* Loading Spinner */
+.spinner {
+  border: 3px solid var(--color-secondary);
+  border-top: 3px solid var(--color-primary);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: var(--space-24) auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-16) 0;
+}
+
+th, td {
+  padding: var(--space-12);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+th {
+  background: var(--color-secondary);
+  font-weight: var(--font-weight-semibold);
+}
+
+tr:hover {
+  background: var(--color-secondary);
+}
+
+/* Auth Modal Styles */
+.auth-step {
+  display: none;
+}
+
+.auth-step.active {
+  display: block;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  opacity: 0.4;
+  transition: opacity 0.3s;
+}
+
+.progress-step.active {
+  opacity: 1;
+}
+
+.progress-step.completed {
+  opacity: 1;
+}
+
+.step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-secondary);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: var(--font-size-sm);
+  border: 2px solid var(--color-border);
+}
+
+.progress-step.active .step-circle {
+  background: var(--color-primary);
+  color: var(--color-btn-primary-text);
+  border-color: var(--color-primary);
+}
+
+.progress-step.completed .step-circle {
+  background: var(--color-success);
+  color: var(--color-btn-primary-text);
+  border-color: var(--color-success);
+}
+
+.step-label {
+  font-size: var(--font-size-xs);
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.progress-step.active .step-label {
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+.progress-line {
+  flex: 1;
+  height: 2px;
+  background: var(--color-border);
+  margin: 0 var(--space-4);
+}
+
+.otp-input-container {
+  display: flex;
+  gap: var(--space-8);
+  justify-content: center;
+  margin: var(--space-16) 0;
+}
+
+.otp-input {
+  width: 48px;
+  height: 56px;
+  text-align: center;
+  font-size: var(--font-size-2xl);
+  font-weight: bold;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-base);
+  background: var(--color-surface);
+  color: var(--color-text);
+  transition: all 0.2s;
+}
+
+.otp-input:focus {
+  border-color: var(--color-primary);
+  outline: var(--focus-outline);
+  transform: scale(1.05);
+}
+
+.accuracy-bar {
+  height: 8px;
+  background: var(--color-secondary);
+  border-radius: var(--radius-base);
+  overflow: hidden;
+}
+
+.accuracy-fill {
+  height: 100%;
+  background: var(--color-primary);
+  transition: width 0.3s, background-color 0.3s;
+}
+
+.accuracy-fill.good {
+  background: var(--color-success);
+}
+
+.accuracy-fill.medium {
+  background: var(--color-warning);
+}
+
+.accuracy-fill.poor {
+  background: var(--color-error);
+}
+
+.avatar-selector {
+  display: flex;
+  gap: var(--space-12);
+  justify-content: center;
+}
+
+.avatar-option {
+  cursor: pointer;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-3xl);
+  color: var(--color-text-secondary);
+  transition: all 0.2s;
+  background: var(--color-surface);
+}
+
+.avatar-option input[type="radio"] {
+  display: none;
+}
+
+.avatar-option:hover {
+  border-color: var(--color-primary);
+  transform: scale(1.1);
+}
+
+.avatar-option input[type="radio"]:checked + i {
+  color: var(--color-primary);
+}
+
+.avatar-option:has(input[type="radio"]:checked) {
+  border-color: var(--color-primary);
+  background: var(--color-bg-1);
+}
+
+/* Toast Notifications */
+.toast {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  padding: 15px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  z-index: 10000;
+  transform: translateX(400px);
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  max-width: 350px;
+}
+
+.toast.show {
+  transform: translateX(0);
+}
+
+.toast-success {
+  background: #06A77D;
+  color: white;
+}
+
+.toast-info {
+  background: #2E86AB;
+  color: white;
+}
+
+.toast-warning {
+  background: #F18F01;
+  color: white;
+}
+
+.toast-error {
+  background: #C0152F;
+  color: white;
+}
+
+/* Demo Banner */
+.demo-banner {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 0;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+.demo-banner span {
+  flex: 1;
+  min-width: 200px;
+}
+
+.try-real-btn {
+  background: white;
+  color: #667eea;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.try-real-btn:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: scale(1.05);
+}
+
+.demo-note {
+  flex-basis: 100%;
+  font-size: 13px;
+  opacity: 0.9;
+  margin: 5px 0 0 0;
+}
+
+/* Weather Box - From reference style.css */
+.weather-box {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  margin-bottom: var(--space-24);
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.weather-box h3 {
+  margin-bottom: var(--space-20);
+  font-size: var(--font-size-2xl);
+}
+
+.weather-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-16);
+  margin-bottom: var(--space-16);
+}
+
+.weather-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-16);
+  background: var(--color-bg-1);
+  border-radius: var(--radius-base);
+}
+
+.weather-item.weather-temp {
+  background: var(--color-bg-2);
+}
+
+.weather-icon {
+  font-size: 32px;
+}
+
+.weather-data {
+  display: flex;
+  flex-direction: column;
+}
+
+.weather-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: 2px;
+}
+
+.weather-value {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.weather-range {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+.location-display {
+  padding-top: var(--space-16);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Profile Section */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  margin-bottom: var(--space-24);
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-3xl);
+  color: var(--color-btn-primary-text);
+}
+
+.profile-info h2 {
+  margin-bottom: var(--space-4);
+}
+
+.profile-location {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <nav class="nav-container">
+                <div class="logo">
+                    <i class="fas fa-water"></i>
+                    <span data-translate="landingtitle">FloodSafe India</span>
+                </div>
+                <div class="nav-actions">
+                    <select id="languageSelector" class="language-selector">
+                        <option value="en">English</option>
+                        <option value="hi">हिन्दी (Hindi)</option>
+                        <option value="ta">தமிழ் (Tamil)</option>
+                        <option value="te">తెలుగు (Telugu)</option>
+                        <option value="mr">मराठी (Marathi)</option>
+                        <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                        <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                        <option value="bn">বাংলা (Bengali)</option>
+                    </select>
+                    <button id="loginBtn" class="btn btn-primary" style="display: none;">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span data-translate="login">Sign In / Register</span>
+                    </button>
+                    <button id="dashboardBtn" class="btn btn-secondary" style="display: none;">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span data-translate="navdashboard">Dashboard</span>
+                    </button>
+                    <button id="profileBtn" class="btn btn-secondary" style="display: none;">
+                        <i class="fas fa-user"></i>
+                        <span data-translate="navprofile">Profile</span>
+                    </button>
+                    <button id="calculatorBtn" class="btn btn-primary">
+                        <i class="fas fa-calculator"></i>
+                        <span data-translate="btncalculator">Flood Calculator</span>
+                    </button>
+                    <button id="logoutBtn" class="btn btn-secondary" style="display: none;">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span data-translate="logout">Logout</span>
+                    </button>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Notification Area -->
+        <div id="notification" class="notification"></div>
+        <div id="offlineIndicator" class="offline-indicator">
+            <i class="fas fa-wifi-slash"></i> <span data-translate="offline_mode">Offline Mode - Limited Features</span>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Page -->
+            <div id="homePage" class="page active">
+                <section class="hero">
+                    <div class="hero-content">
+                        <h1 data-translate="tagline">Advanced Flood Prediction &amp; Early Warning System</h1>
+                        <p data-translate="hero_subtitle">Real-time flood forecasting, hydrological analysis, and safety guidelines powered by cutting-edge science</p>
+                        <button id="getStartedBtn" class="btn btn-primary" style="font-size: var(--font-size-lg); padding: var(--space-12) var(--space-32);">
+                            <i class="fas fa-rocket"></i>
+                            <span data-translate="btngetstarted">Get Started</span>
+                        </button>
+                    </div>
+                </section>
+
+                <div class="card">
+                    <h2 data-translate="btnabout">About FloodSafe India</h2>
+                    <p>FloodSafe India is a comprehensive flood prediction and alert system that leverages advanced hydrological principles, real-time weather data, and historical flood records to provide accurate flood forecasts. Our system uses Saint-Venant equations, Manning's formula, SCS-CN method, and unit hydrograph analysis to calculate precise flood arrival times based on your location.</p>
+                </div>
+
+                <div class="grid grid-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="color: var(--color-primary);"><i class="fas fa-map-marked-alt"></i></div>
+                        <div class="stat-value">28</div>
+                        <div class="stat-label">States Covered</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="color: var(--color-warning);"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div class="stat-value">150+</div>
+                        <div class="stat-label">Flood Prone Zones</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="color: var(--color-success);"><i class="fas fa-users"></i></div>
+                        <div class="stat-value">24/7</div>
+                        <div class="stat-label">Real-time Monitoring</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 data-translate="flood_map_title">India Flood Risk Map</h2>
+                    <img src="https://pplx-res.cloudinary.com/image/upload/v1763054016/search_images/1e0f1a008017298f4d7d081997d0b9ecb98726fb.jpg" alt="India Flood Zone Map" class="info-image">
+                </div>
+
+                <div class="card">
+                    <h2 data-translate="top_flood_zones">Top Flood Prone States in India</h2>
+                    <img src="https://pplx-res.cloudinary.com/image/upload/v1763054018/search_images/2b47ff00243f6febe737bd723fc82988c5c0b547.jpg" alt="Top Flood Prone Areas" class="info-image">
+                </div>
+
+                <div class="card">
+                    <h2 data-translate="safety_guidelines_title">Flood Safety Guidelines</h2>
+                    <div class="image-grid">
+                        <img src="https://pplx-res.cloudinary.com/image/upload/v1763054016/search_images/7bb764c087f86bdb396f83484659607b00b8bdb2.jpg" alt="Flood Safety Guidelines">
+                        <img src="https://pplx-res.cloudinary.com/image/upload/v1763054016/search_images/1e400ffb0c165a94888f3732943f818dcd25a8c5.jpg" alt="Flood Preparedness">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 data-translate="hydrograph_title">Understanding Hydrographs - Flood Prediction Science</h2>
+                    <p data-translate="hydrograph_description">Hydrographs are essential tools in flood prediction, showing how river discharge changes over time in response to rainfall events.</p>
+                    <div class="image-grid">
+                        <img src="https://pplx-res.cloudinary.com/image/upload/v1763054016/search_images/b2b5628970e4a85e7fa0aa694297c27eb2d85ea1.jpg" alt="Hydrograph Education">
+                        <img src="https://pplx-res.cloudinary.com/image/upload/v1763054016/search_images/8dc85c451cb593b042c3440e179bf8c175a71709.jpg" alt="Hydrograph Characteristics">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="page">
+                <div id="floodAlert" style="display: none;"></div>
+
+                <div class="card">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h2 id="userName" data-translate="welcome_user">Welcome, User</h2>
+                            <p class="profile-location" id="userLocation"><i class="fas fa-map-marker-alt"></i> <span data-translate="detecting_location">Detecting location...</span></p>
+                            <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-top: var(--space-4);">
+                                <i class="fas fa-phone"></i> <span id="userPhoneMasked">+91 ••••••••••</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="weather-box">
+                    <h3 data-translate="currentweather">Current Weather Conditions</h3>
+                    
+                    <div class="weather-grid">
+                        <!-- Temperature Card -->
+                        <div class="weather-item weather-temp">
+                            <div class="weather-icon">🌡️</div>
+                            <div class="weather-data">
+                                <span class="weather-label" data-translate="temperature">Temperature</span>
+                                <span class="weather-value" id="tempValue">--°C</span>
+                                <span class="weather-range" id="tempRange">-- - --</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Humidity Card -->
+                        <div class="weather-item">
+                            <div class="weather-icon">💧</div>
+                            <div class="weather-data">
+                                <span class="weather-label" data-translate="humidity">Humidity</span>
+                                <span class="weather-value" id="humidityValue">--%</span>
+                                <span class="weather-range" id="humidityDetail">AM: -- | PM: --</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Pressure Card -->
+                        <div class="weather-item">
+                            <div class="weather-icon">🌬️</div>
+                            <div class="weather-data">
+                                <span class="weather-label" data-translate="pressure">Pressure</span>
+                                <span class="weather-value" id="pressureValue">-- hPa</span>
+                                <span class="weather-range" id="pressureTrend">--</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Rainfall Card -->
+                        <div class="weather-item">
+                            <div class="weather-icon" id="rainIcon">🌧️</div>
+                            <div class="weather-data">
+                                <span class="weather-label">Rainfall</span>
+                                <span class="weather-value" id="rainValue">No</span>
+                                <span class="weather-range" id="rainTomorrow">Tomorrow: --</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Wind Speed Card -->
+                        <div class="weather-item">
+                            <div class="weather-icon">💨</div>
+                            <div class="weather-data">
+                                <span class="weather-label" data-translate="windspeed">Wind Speed</span>
+                                <span class="weather-value" id="windValue">-- km/h</span>
+                                <span class="weather-range" id="windDetail">AM: -- | PM: --</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Sky Condition Card -->
+                        <div class="weather-item">
+                            <div class="weather-icon" id="skyIcon">☀️</div>
+                            <div class="weather-data">
+                                <span class="weather-label">Sky Condition</span>
+                                <span class="weather-value" id="skyValue">Clear</span>
+                                <span class="weather-range" id="skyDetail">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Location Display -->
+                    <div class="location-display">
+                        <span>📍 Location: </span>
+                        <span id="currentLocation">--</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 data-translate="riskgauge">Flood Risk Gauge</h3>
+                    <div id="floodRiskStatus">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 data-translate="navmap">Interactive Flood Risk Map</h2>
+                    <div id="map"></div>
+                </div>
+
+                <!-- Enhanced Regional Flood History Chart -->
+                <div class="chart-card enhanced-chart">
+                    <div class="chart-header">
+                        <div class="chart-title-group">
+                            <span class="chart-icon">📊</span>
+                            <h3 data-translate="floodhistory">Regional Flood History (2005-2025)</h3>
+                        </div>
+                        <div class="chart-actions">
+                            <button class="btn btn-secondary" style="padding: var(--space-8) var(--space-16); font-size: var(--font-size-sm);">
+                                📥 Download Data
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-description">
+                        <p>Historical flood occurrence and severity across major Indian states over the past 20 years</p>
+                    </div>
+                    
+                    <div class="chart-container" style="position: relative; height: 400px; margin-bottom: var(--space-20); padding: var(--space-16); background: rgba(var(--color-teal-500-rgb), 0.02); border-radius: var(--radius-base);">
+                        <canvas id="floodHistoryChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-legend-custom">
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #1FB8CD"></span>
+                            <span>Flood Events Count</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #FFC185"></span>
+                            <span>Affected Population (Millions)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced 7-Day Rainfall Forecast Chart -->
+                <div class="chart-card enhanced-chart">
+                    <div class="chart-header">
+                        <div class="chart-title-group">
+                            <span class="chart-icon">🌧️</span>
+                            <h3 data-translate="rainfallforecast">7-Day Rainfall Forecast</h3>
+                        </div>
+                        <div class="chart-actions">
+                            <button class="btn btn-secondary" style="padding: var(--space-8) var(--space-16); font-size: var(--font-size-sm);">
+                                🔄 Refresh
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-description">
+                        <p>Predicted rainfall intensity and distribution for the next 7 days in your region</p>
+                    </div>
+                    
+                    <div class="chart-container" style="position: relative; height: 400px; margin-bottom: var(--space-20); padding: var(--space-16); background: rgba(var(--color-teal-500-rgb), 0.02); border-radius: var(--radius-base);">
+                        <canvas id="rainfallChart"></canvas>
+                    </div>
+                    
+                    <div class="forecast-summary">
+                        <div class="summary-item">
+                            <span class="summary-icon">☔</span>
+                            <div class="summary-content">
+                                <div class="summary-label">Total Expected</div>
+                                <div class="summary-value">145 mm</div>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-icon">⚡</span>
+                            <div class="summary-content">
+                                <div class="summary-label">Peak Day</div>
+                                <div class="summary-value">Day 4</div>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-icon">🌈</span>
+                            <div class="summary-content">
+                                <div class="summary-label">Average/Day</div>
+                                <div class="summary-value">20.7 mm</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- High-Risk Districts Section -->
+                <div class="high-risk-section">
+                    <div class="section-header">
+                        <div class="section-title-group">
+                            <span class="section-icon alert-icon-blink">🚨</span>
+                            <h2 data-translate="highriskdistricts">High-Risk Districts</h2>
+                        </div>
+                        <div class="section-subtitle">
+                            Districts with elevated flood risk based on historical data and current conditions
+                        </div>
+                    </div>
+                    
+                    <div class="risk-districts-grid">
+                        <!-- Assam -->
+                        <div class="district-card risk-very-high">
+                            <div class="district-header">
+                                <div class="district-info">
+                                    <h3 class="district-state">Assam</h3>
+                                    <div class="risk-badge very-high">Very High Risk</div>
+                                </div>
+                                <div class="district-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-value">3.15</span>
+                                        <span class="stat-unit">Mha</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="district-body">
+                                <div class="affected-districts">
+                                    <span class="label">Affected Districts:</span>
+                                    <div class="district-tags">
+                                        <span class="tag">Dhubri</span>
+                                        <span class="tag">Goalpara</span>
+                                        <span class="tag">Kokrajhar</span>
+                                        <span class="tag">Dhemaji</span>
+                                        <span class="tag">Dibrugarh</span>
+                                        <span class="tag">Lakhimpur</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="district-metrics">
+                                    <div class="metric">
+                                        <span class="metric-icon">👥</span>
+                                        <span class="metric-text">2.8M affected population</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span class="metric-icon">💧</span>
+                                        <span class="metric-text">River flooding, flash floods</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="district-footer">
+                                <button class="btn btn-secondary" style="padding: var(--space-6) var(--space-12); font-size: var(--font-size-sm); flex: 1;">
+                                    📊 View Details
+                                </button>
+                                <button class="btn btn-secondary" style="padding: var(--space-6) var(--space-12); font-size: var(--font-size-sm); flex: 1;">
+                                    🗺️ Show on Map
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Bihar -->
+                        <div class="district-card risk-very-high">
+                            <div class="district-header">
+                                <div class="district-info">
+                                    <h3 class="district-state">Bihar</h3>
+                                    <div class="risk-badge very-high">Very High Risk</div>
+                                </div>
+                                <div class="district-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-value">4.26</span>
+                                        <span class="stat-unit">Mha</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="district-body">
+                                <div class="affected-districts">
+                                    <span class="label">Affected Districts:</span>
+                                    <div class="district-tags">
+                                        <span class="tag">Darbhanga</span>
+                                        <span class="tag">Sitamarhi</span>
+                                        <span class="tag">Supaul</span>
+                                        <span class="tag">Bhagalpur</span>
+                                        <span class="tag">Patna</span>
+                                        <span class="tag">East Champaran</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="district-metrics">
+                                    <div class="metric">
+                                        <span class="metric-icon">👥</span>
+                                        <span class="metric-text">3.5M affected population</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span class="metric-icon">💧</span>
+                                        <span class="metric-text">Monsoon flooding, river overflow</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="district-footer">
+                                <button class="btn btn-secondary" style="padding: var(--space-6) var(--space-12); font-size: var(--font-size-sm); flex: 1;">
+                                    📊 View Details
+                                </button>
+                                <button class="btn btn-secondary" style="padding: var(--space-6) var(--space-12); font-size: var(--font-size-sm); flex: 1;">
+                                    🗺️ Show on Map
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Uttar Pradesh -->
+                        <div class="district-card risk-very-high">
+                            <div class="district-header">
+                                <div class="district-info">
+                                    <h3 class="district-state">Uttar Pradesh</h3>
+                                    <div class="risk-badge very-high">Very High Risk</div>
+                                </div>
+                                <div class="district-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-value">7.34</span>
+                                        <span class="stat-unit">Mha</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="district-body">
+                                <div class="affected-districts">
+                                    <span class="label">Affected Districts:</span>
+                                    <div class="district-tags">
+                                        <span class="tag">Lucknow</span>
+                                        <span class="tag">Sultanpur</span>
+                                        <span class="tag">Rae Bareli</span>
+                                        <span class="tag">Hardoi</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="district-metrics">
+                                    <div class="metric">
+                                        <span class="metric-icon">👥</span>
+                                        <span class="metric-text">4.2M affected population</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span class="metric-icon">💧</span>
+                                        <span class="metric-text">Ganga overflow, urban flooding</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="district-footer">
+                                <button class="btn btn-secondary" style="padding: var(--space-6) var(--space-12); font-size: var(--font-size-sm); flex: 1;">
+                                    📊 View Details
+                                </button>
+                                <button class="btn btn-secondary" style="padding: var(--space-6) var(--space-12); font-size: var(--font-size-sm); flex: 1;">
+                                    🗺️ Show on Map
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- West Bengal -->
+                        <div class="district-card risk-high">
+                            <div class="district-header">
+                                <div class="district-info">
+                                    <h3 class="district-state">West Bengal</h3>
+                                    <div class="risk-badge high">High Risk</div>
+                                </div>
+                                <div class="district-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-value">2.65</span>
+                                        <span class="stat-unit">Mha</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="district-body">
+                                <div class="affected-districts">
+                                    <span class="label">Affected Districts:</span>
+                                    <div class="district-tags">
+                                        <span class="tag">Murshidabad</span>
+                                        <span class="tag">Malda</span>
+                                        <span class="tag">Nadia</span>
+                                        <span class="tag">Cooch Behar</span>
+                                        <span class="tag">Jalpaiguri</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="district-metrics">
+                                    <div class="metric">
+                                        <span class="metric-icon">👥</span>
+                                        <span class="metric-text">2.1M affected population</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span class="metric-icon">💧</span>
+                                        <span class="metric-text">Delta flooding, cyclone surge</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="district-footer">
+                                <button class="btn btn-secondary" style="padding: var(--space-6) var(--space-12); font-size: var(--font-size-sm); flex: 1;">
+                                    📊 View Details
+                                </button>
+                                <button class="btn btn-secondary" style="padding: var(--space-6) var(--space-12); font-size: var(--font-size-sm); flex: 1;">
+                                    🗺️ Show on Map
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Odisha -->
+                        <div class="district-card risk-high">
+                            <div class="district-header">
+                                <div class="district-info">
+                                    <h3 class="district-state">Odisha</h3>
+                                    <div class="risk-badge high">High Risk</div>
+                                </div>
+                                <div class="district-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-value">1.40</span>
+                                        <span class="stat-unit">Mha</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="district-body">
+                                <div class="affected-districts">
+                                    <span class="label">Affected Districts:</span>
+                                    <div class="district-tags">
+                                        <span class="tag">Puri</span>
+                                        <span class="tag">Kendrapara</span>
+                                        <span class="tag">Bhadrak</span>
+                                        <span class="tag">Balasore</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="district-metrics">
+                                    <div class="metric">
+                                        <span class="metric-icon">👥</span>
+                                        <span class="metric-text">1.5M affected population</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span class="metric-icon">💧</span>
+                                        <span class="metric-text">Coastal flooding, cyclones</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="district-footer">
+                                <button class="btn btn-secondary" style="padding: var(--space-6) var(--space-12); font-size: var(--font-size-sm); flex: 1;">
+                                    📊 View Details
+                                </button>
+                                <button class="btn btn-secondary" style="padding: var(--space-6) var(--space-12); font-size: var(--font-size-sm); flex: 1;">
+                                    🗺️ Show on Map
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Gujarat -->
+                        <div class="district-card risk-high">
+                            <div class="district-header">
+                                <div class="district-info">
+                                    <h3 class="district-state">Gujarat</h3>
+                                    <div class="risk-badge high">High Risk</div>
+                                </div>
+                                <div class="district-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-value">1.39</span>
+                                        <span class="stat-unit">Mha</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="district-body">
+                                <div class="affected-districts">
+                                    <span class="label">Affected Districts:</span>
+                                    <div class="district-tags">
+                                        <span class="tag">Surat</span>
+                                        <span class="tag">Vadodara</span>
+                                        <span class="tag">Ahmedabad</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="district-metrics">
+                                    <div class="metric">
+                                        <span class="metric-icon">👥</span>
+                                        <span class="metric-text">1.8M affected population</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span class="metric-icon">💧</span>
+                                        <span class="metric-text">Urban flooding, dam overflow</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="district-footer">
+                                <button class="btn btn-secondary" style="padding: var(--space-6) var(--space-12); font-size: var(--font-size-sm); flex: 1;">
+                                    📊 View Details
+                                </button>
+                                <button class="btn btn-secondary" style="padding: var(--space-6) var(--space-12); font-size: var(--font-size-sm); flex: 1;">
+                                    🗺️ Show on Map
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flood Alert Detail Page -->
+            <div id="alertDetailPage" class="page">
+                <div class="alert-banner error">
+                    <i class="fas fa-exclamation-triangle alert-icon"></i>
+                    <div>
+                        <strong data-translate="flood_alert">FLOOD ALERT</strong>
+                        <p id="alertMessage" data-translate="active_flood_detected">Active flood detected in your region</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 data-translate="flood_details">Flood Event Details</h2>
+                    <div id="floodDetails"></div>
+                </div>
+
+                <div class="card">
+                    <h2 data-translate="calculate_arrival">Calculate Flood Arrival Time</h2>
+                    <p data-translate="arrival_description">Enter the parameters below to calculate when the flood will reach your location using advanced hydrological equations.</p>
+                    
+                    <form id="arrivalForm">
+                        <div class="form-group">
+                            <label class="form-label" data-translate="distance_label">Distance from flooded area (km)</label>
+                            <input type="number" id="distance" class="form-control" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="elevation_diff_label">Elevation difference (m) - Your location vs flood source</label>
+                            <input type="number" id="elevation" class="form-control" step="0.1" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="discharge_label">Estimated water discharge (m³/s)</label>
+                            <input type="number" id="discharge" class="form-control" value="500" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="channel_width_label">Average channel width (m)</label>
+                            <input type="number" id="channelWidth" class="form-control" value="50" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="manning_n_label">Manning's roughness coefficient (n)</label>
+                            <input type="number" id="manningN" class="form-control" value="0.035" step="0.001" required>
+                            <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Typical values: Natural streams 0.03-0.04, Floodplains 0.05-0.15</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-calculator"></i>
+                            <span data-translate="calculate_btn">Calculate Arrival Time</span>
+                        </button>
+                    </form>
+
+                    <div id="calculationResults" style="display: none;">
+                        <h3 data-translate="calculation_results">Calculation Results</h3>
+                        <div id="calculationSteps"></div>
+                        <div class="chart-container">
+                            <canvas id="arrivalChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 data-translate="immediate_actions">Immediate Safety Actions</h2>
+                    <img src="https://pplx-res.cloudinary.com/image/upload/v1763054016/search_images/7bb764c087f86bdb396f83484659607b00b8bdb2.jpg" alt="Flood Safety" class="info-image">
+                </div>
+            </div>
+
+            <!-- Flood Calculator Page -->
+            <div id="calculatorPage" class="page">
+                <!-- PROMINENT BACK BUTTON HEADER -->
+                <div class="page-header-with-back">
+                    <button class="btn-back-home" onclick="goBackToHome()">
+                        <span class="back-icon">⬅</span>
+                        <span class="back-text" data-translate="backtohome">Back to Home</span>
+                    </button>
+                    <div class="page-title-group">
+                        <h1 class="page-title" data-translate="calculatortitle">Flood Calculator</h1>
+                        <p class="page-subtitle">Calculate flood arrival time and prepare accordingly</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 data-translate="calculatortitle">Flood Arrival Time Calculator</h2>
+                    <p>Calculate precise flood arrival time using advanced hydrological equations. This tool uses Manning's equation, Rational method, Wave Celerity, and Unit Hydrograph principles to predict when flood waters will reach your location.</p>
+                </div>
+
+                <!-- Calculator Mode Selector -->
+                <div class="card" style="background: var(--color-bg-1); border: 2px solid var(--color-primary);">
+                    <div style="display: flex; gap: var(--space-12); margin-bottom: var(--space-24);">
+                        <button id="simpleModeBtn" class="btn btn-primary" style="flex: 1;" onclick="switchCalculatorMode('simple')">
+                            <i class="fas fa-user"></i>
+                            <span data-translate="simplemode">👤 Simple Mode</span>
+                        </button>
+                        <button id="advancedModeBtn" class="btn btn-secondary" style="flex: 1;" onclick="switchCalculatorMode('advanced')">
+                            <i class="fas fa-flask"></i>
+                            <span data-translate="advancedmode">🔬 Advanced Mode</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SIMPLE CALCULATOR -->
+                <div id="simpleCalculator" class="card">
+                    <h3>⏱️ Simple Flood Arrival Calculator</h3>
+                    <p style="color: var(--color-text-secondary); margin-bottom: var(--space-20);">Perfect for quick estimates without technical knowledge. Just enter distance and flood speed!</p>
+                    
+                    <form id="simpleCalculatorForm">
+                        <div class="form-group">
+                            <label class="form-label">
+                                📍 Distance from Flood Source (km)
+                                <span style="font-size: var(--font-size-xs); color: var(--color-text-secondary); font-weight: normal;">— How far is the flood from you?</span>
+                            </label>
+                            <input type="number" id="simpleDistance" class="form-control" placeholder="e.g., 5" step="0.1" min="0.1" required>
+                            <small style="color: var(--color-text-secondary); margin-top: var(--space-4); display: block;">Example: If flood is 5 km away, enter 5</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">💨 Flood Speed</label>
+                            <select id="floodSpeed" class="form-control">
+                                <option value="">Select recommended speed...</option>
+                                <optgroup label="🌍 Recommended for Your Region">
+                                    <option value="2">Mumbai - Slow (2 km/h)</option>
+                                    <option value="5" selected>Delhi - Moderate (5 km/h)</option>
+                                    <option value="8">Kolkata - Fast (8 km/h)</option>
+                                    <option value="4">Bangalore - Moderate (4 km/h)</option>
+                                    <option value="3">Chennai - Slow (3 km/h)</option>
+                                    <option value="12">Kerala Hills - Very Fast (12 km/h)</option>
+                                    <option value="6">Bihar - Moderate-Fast (6 km/h)</option>
+                                    <option value="8">Assam - Fast (8 km/h)</option>
+                                    <option value="15">Uttarakhand Mountains - Very Fast (15 km/h)</option>
+                                </optgroup>
+                                <optgroup label="⚡ Terrain-Based">
+                                    <option value="1.5">Flat Urban Area - Very Slow (1.5 km/h)</option>
+                                    <option value="3">Urban with Drainage - Slow (3 km/h)</option>
+                                    <option value="6">Rural Plains - Moderate (6 km/h)</option>
+                                    <option value="10">Hills/Slopes - Fast (10 km/h)</option>
+                                    <option value="15">Mountains/Rivers - Very Fast (15 km/h)</option>
+                                </optgroup>
+                            </select>
+                            <small style="color: var(--color-text-secondary); margin-top: var(--space-4); display: block;">Choose based on your region or terrain type</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                🔧 Or Enter Custom Speed (km/h)
+                                <span style="font-size: var(--font-size-xs); color: var(--color-text-secondary); font-weight: normal;">— Optional: if you know exact speed</span>
+                            </label>
+                            <input type="number" id="customSpeed" class="form-control" placeholder="Leave empty to use selected speed" step="0.5" min="0.1">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" style="width: 100%; padding: var(--space-12) var(--space-24); font-size: var(--font-size-lg);">
+                            <i class="fas fa-stopwatch"></i>
+                            <span data-translate="calculate">⏱️ Calculate Arrival Time</span>
+                        </button>
+                    </form>
+                    
+                    <!-- Simple Result - ENHANCED -->
+                    <div id="simpleResult" class="calculator-results simple-mode" style="display: none; margin-top: 32px;">
+                        <!-- Header -->
+                        <div class="results-header gradient-hero">
+                            <div class="results-icon float-animation">⏱️</div>
+                            <h3>Flood Arrival Prediction</h3>
+                        </div>
+                        
+                        <!-- Visual Timeline -->
+                        <div class="timeline-visualization glass-card" style="margin-top: 24px;">
+                            <div class="timeline-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                                <span class="timeline-label" style="font-size:14px;color:var(--color-text-secondary)">📍 Your Location</span>
+                                <span class="timeline-label" style="font-size:14px;color:var(--color-text-secondary)">🌊 Flood Source</span>
+                            </div>
+                            
+                            <div class="timeline-track">
+                                <div class="timeline-progress" id="floodProgress"></div>
+                                <div class="location-marker start" style="position:absolute;left:0;top:50%;transform:translateY(-50%);font-size:24px;z-index:3">👤</div>
+                                <div class="flood-marker" id="floodMarker">🌊</div>
+                                <div class="location-marker end" style="position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:24px;z-index:3">🌊</div>
+                            </div>
+                            
+                            <div class="timeline-info" style="display:flex;justify-content:space-around;margin-top:12px;">
+                                <div class="info-box" style="text-align:center;">
+                                    <span class="label" style="font-size:12px;color:var(--color-text-secondary);display:block;">Distance:</span>
+                                    <span class="value" id="simpleDistanceDisplay" style="font-weight:bold;font-size:16px;">10 km</span>
+                                </div>
+                                <div class="info-box" style="text-align:center;">
+                                    <span class="label" style="font-size:12px;color:var(--color-text-secondary);display:block;">Flood Speed:</span>
+                                    <span class="value" id="simpleSpeedDisplay" style="font-weight:bold;font-size:16px;">5 km/h</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Big Time Display -->
+                        <div class="arrival-time-display gradient-success" style="margin-top:24px;">
+                            <div class="time-label" style="font-size:18px;margin-bottom:8px;" data-translate="arrivaltime">Flood Will Arrive In:</div>
+                            <div class="time-digits">
+                                <div class="digit-group" style="display:flex;flex-direction:column;align-items:center;">
+                                    <span class="digit" id="hoursDigit">2</span>
+                                    <span class="unit" style="font-size:16px;margin-top:4px;opacity:0.9;" data-translate="hours">hours</span>
+                                </div>
+                                <span class="separator" style="font-size:48px;font-weight:bold;margin:0 8px;">:</span>
+                                <div class="digit-group" style="display:flex;flex-direction:column;align-items:center;">
+                                    <span class="digit" id="minutesDigit">30</span>
+                                    <span class="unit" style="font-size:16px;margin-top:4px;opacity:0.9;" data-translate="minutes">minutes</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Speed vs Distance Graph -->
+                        <div class="graph-section glass-card" style="margin-top:24px;">
+                            <h4>📊 Distance-Time Graph</h4>
+                            <canvas id="simpleGraphCanvas"></canvas>
+                            <div class="graph-insights">
+                                <div class="insight-item">
+                                    <span class="icon">📏</span>
+                                    <span class="text">Distance: <strong id="graphDistance">10 km</strong></span>
+                                </div>
+                                <div class="insight-item">
+                                    <span class="icon">⚡</span>
+                                    <span class="text">Speed: <strong id="graphSpeed">5 km/h</strong></span>
+                                </div>
+                                <div class="insight-item">
+                                    <span class="icon">⏰</span>
+                                    <span class="text">Arrival: <strong id="graphTime">2.5 hours</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Evacuation Timeline -->
+                        <div class="evacuation-timeline glass-card" style="margin-top:24px;">
+                            <h4>🚀 Evacuation Timeline</h4>
+                            <div class="timeline-steps">
+                                <div class="timeline-step completed">
+                                    <div class="step-icon">✓</div>
+                                    <div class="step-info">
+                                        <div class="step-title">Now: Prepare</div>
+                                        <div class="step-desc">Gather essentials, alert family</div>
+                                    </div>
+                                </div>
+                                <div class="timeline-step active" id="evacStart">
+                                    <div class="step-icon">⏰</div>
+                                    <div class="step-info">
+                                        <div class="step-title">+30 min: Start Evacuation</div>
+                                        <div class="step-desc">Leave for safe zone</div>
+                                    </div>
+                                </div>
+                                <div class="timeline-step" id="safeZone">
+                                    <div class="step-icon">🏠</div>
+                                    <div class="step-info">
+                                        <div class="step-title">+1 hour: Safe Zone</div>
+                                        <div class="step-desc">Reach evacuation center</div>
+                                    </div>
+                                </div>
+                                <div class="timeline-step danger" id="floodArrival">
+                                    <div class="step-icon">🌊</div>
+                                    <div class="step-info">
+                                        <div class="step-title" id="floodArrivalTitle">+2.5 hours: Flood Arrival</div>
+                                        <div class="step-desc">Water reaches your area</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Safety Recommendation -->
+                        <div class="safety-card gradient-warning" id="simpleWarning">
+                            <div class="safety-icon">⚠️</div>
+                            <div class="safety-content">
+                                <h4>Recommended Action</h4>
+                                <p id="safetyRecommendation">Start evacuation within 30 minutes to ensure safety.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADVANCED CALCULATOR (existing) -->
+                <div id="advancedCalculator" style="display: none;">
+
+                <div class="card">
+                    <h3 data-translate="input_parameters">Advanced Input Parameters</h3>
+                    <p style="color: var(--color-text-secondary); margin-bottom: var(--space-16);">For technical users: Uses Manning's equation, Rational method, and hydrological analysis</p>
+                    <form id="floodCalculatorForm">
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label class="form-label" data-translate="calc_distance_label">Distance from Flood Source (km)</label>
+                                <input type="range" id="calcDistance" min="0.1" max="100" step="0.1" value="15" class="form-control" style="margin-bottom: var(--space-8);">
+                                <input type="number" id="calcDistanceValue" class="form-control" value="15" step="0.1" min="0.1" max="100">
+                                <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Distance between flood origin point and your location</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" data-translate="calc_manning_label">Manning's Roughness Coefficient (n)</label>
+                                <select id="calcManningN" class="form-control">
+                                    <option value="0.025">0.025 - Clean straight channel</option>
+                                    <option value="0.035" selected>0.035 - Natural stream with vegetation</option>
+                                    <option value="0.050">0.050 - Stream with bushes and vegetation</option>
+                                    <option value="0.075">0.075 - Heavy vegetation</option>
+                                    <option value="0.100">0.100 - Very heavy vegetation / forest</option>
+                                </select>
+                                <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Roughness depends on channel bed and vegetation</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" data-translate="calc_hydraulic_radius_label">Hydraulic Radius / Channel Depth (m)</label>
+                                <input type="range" id="calcHydraulicRadius" min="0.5" max="15" step="0.1" value="3.5" class="form-control" style="margin-bottom: var(--space-8);">
+                                <input type="number" id="calcHydraulicRadiusValue" class="form-control" value="3.5" step="0.1" min="0.5" max="15">
+                                <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Average depth or hydraulic radius of the channel</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" data-translate="calc_slope_label">Channel Slope (m/m)</label>
+                                <input type="range" id="calcSlope" min="0.0001" max="0.01" step="0.0001" value="0.003" class="form-control" style="margin-bottom: var(--space-8);">
+                                <input type="number" id="calcSlopeValue" class="form-control" value="0.003" step="0.0001" min="0.0001" max="0.01">
+                                <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Slope of the channel bed (rise/run)</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" data-translate="calc_rainfall_label">Rainfall Intensity (mm/hr)</label>
+                                <input type="number" id="calcRainfall" class="form-control" value="50" step="1" min="0" max="200">
+                                <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Current or expected rainfall intensity</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" data-translate="calc_catchment_label">Catchment Area (km²)</label>
+                                <input type="number" id="calcCatchment" class="form-control" value="150" step="1" min="1" max="10000">
+                                <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Total drainage area upstream</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" data-translate="calc_runoff_label">Runoff Coefficient (C)</label>
+                                <input type="range" id="calcRunoff" min="0.1" max="0.9" step="0.05" value="0.5" class="form-control" style="margin-bottom: var(--space-8);">
+                                <input type="number" id="calcRunoffValue" class="form-control" value="0.5" step="0.05" min="0.1" max="0.9">
+                                <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">0.1=rural, 0.3=suburban, 0.5=urban, 0.9=paved</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" data-translate="calc_method_label">Calculation Method</label>
+                                <select id="calcMethod" class="form-control">
+                                    <option value="manning">Manning's Equation</option>
+                                    <option value="rational">Rational Method</option>
+                                    <option value="wave">Wave Celerity</option>
+                                    <option value="all" selected>All Methods (Comparison)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: var(--space-16); font-size: var(--font-size-lg); padding: var(--space-12) var(--space-24);">
+                            <i class="fas fa-calculator"></i>
+                            <span data-translate="calculate_arrival_btn">Calculate Flood Arrival Time</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div id="calculatorResults" class="calculator-results" style="display: none;">
+                    <!-- Header with Icon -->
+                    <div class="results-header gradient-hero">
+                        <div class="results-icon float-animation">📊</div>
+                        <h3>Advanced Calculation Results</h3>
+                        <p class="results-subtitle">Step-by-Step Flood Prediction Analysis</p>
+                    </div>
+                    
+                    <!-- Step-by-Step Process Visualization -->
+                    <div class="process-steps" id="calculatorSteps">
+                        <!-- Populated by JS with step-card glass-card elements -->
+                    </div>
+                    
+                    <!-- Big Arrival Time Display -->
+                    <div id="arrivalSummary">
+                        <!-- Populated by JS with arrival-time-display gradient-success -->
+                    </div>
+                    
+                    <!-- Hydrograph Visualization -->
+                    <div class="hydrograph-section glass-card">
+                        <h4>📈 Flood Hydrograph</h4>
+                        <p style="color: var(--color-text-secondary); margin-bottom: 16px;">This hydrograph shows the predicted discharge over time. The rising limb indicates flood arrival, peak shows maximum intensity, and recession limb shows water level decline.</p>
+                        <canvas id="hydrographChart"></canvas>
+                        <div class="hydrograph-legend">
+                            <div class="legend-item">
+                                <span class="color-box" style="background: #1FB8CD"></span>
+                                <span>Rising Limb</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="color-box" style="background: #DB4545"></span>
+                                <span>Peak Flood</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="color-box" style="background: #FFC185"></span>
+                                <span>Recession</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Method Comparison -->
+                    <div class="glass-card">
+                        <h4 data-translate="method_comparison">⚖️ Comparison of Calculation Methods</h4>
+                        <div id="methodComparison"></div>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="comparisonChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Warning Card -->
+                    <div class="warning-card" id="warningCard" style="display: none;">
+                        <div class="warning-icon">🚨</div>
+                        <div class="warning-content">
+                            <h4>HIGH ALERT</h4>
+                            <p>Flood expected in less than 2 hours. Evacuate immediately!</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Safety Recommendations -->
+                    <div class="glass-card">
+                        <h4 data-translate="safety_recommendations">🛡️ Safety Recommendations</h4>
+                        <div id="safetyRecommendations"></div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button class="btn btn--primary btn--lg" onclick="downloadFloodResultPDF()">
+                            📤 Download Report
+                        </button>
+                        <button class="btn btn--secondary btn--lg" onclick="shareFloodCalculation()">
+                            🔔 Share Alert
+                        </button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profilePage" class="page">
+                <div class="card">
+                    <h2 data-translate="profile_settings">Profile Settings</h2>
+                    <div style="background: var(--color-bg-1); padding: var(--space-16); border-radius: var(--radius-base); margin-bottom: var(--space-16);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
+                            <span style="font-weight: bold;">Location Accuracy:</span>
+                            <span id="profileAccuracy" style="color: var(--color-primary); font-weight: bold;">-- m</span>
+                        </div>
+                        <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary); font-family: monospace;">
+                            <div>Latitude: <span id="profileLat">--</span></div>
+                            <div>Longitude: <span id="profileLng">--</span></div>
+                        </div>
+                        <button type="button" class="btn btn-secondary" id="refreshLocationBtn" style="width: 100%; margin-top: var(--space-12);">
+                            <i class="fas fa-sync-alt"></i>
+                            <span data-translate="refresh_location">Refresh Location</span>
+                        </button>
+                    </div>
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label class="form-label" data-translate="name_label">Full Name</label>
+                            <input type="text" id="profileName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="email_label">Email</label>
+                            <input type="email" id="profileEmail" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="phone_label">Phone Number</label>
+                            <input type="tel" id="profilePhone" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="address_label">Address</label>
+                            <textarea id="profileAddress" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="location_type_label">Location Type</label>
+                            <select id="locationType" class="form-control">
+                                <option value="urban">Urban</option>
+                                <option value="rural">Rural</option>
+                                <option value="coastal">Coastal</option>
+                                <option value="riverine">Near River</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            <span data-translate="save_profile">Save Profile</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2 data-translate="notification_preferences">Notification Preferences</h2>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: var(--space-8);">
+                            <input type="checkbox" id="emailAlerts" checked>
+                            <span data-translate="email_alerts">Email Alerts</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: var(--space-8);">
+                            <input type="checkbox" id="smsAlerts" checked>
+                            <span data-translate="sms_alerts">SMS Alerts</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: var(--space-8);">
+                            <input type="checkbox" id="pushAlerts" checked>
+                            <span data-translate="push_alerts">Push Notifications</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- OTP Registration/Login Modal -->
+        <div id="authModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="authModalTitle" data-translate="register_title">Register with FloodSafe India</h2>
+                    <button class="modal-close" id="closeAuthModal">&times;</button>
+                </div>
+                
+                <!-- Progress Indicator -->
+                <div id="authProgress" style="margin-bottom: var(--space-24);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
+                        <div class="progress-step active" id="step1">
+                            <div class="step-circle">1</div>
+                            <div class="step-label" data-translate="step_phone">Phone</div>
+                        </div>
+                        <div class="progress-line"></div>
+                        <div class="progress-step" id="step2">
+                            <div class="step-circle">2</div>
+                            <div class="step-label" data-translate="step_otp">OTP</div>
+                        </div>
+                        <div class="progress-line"></div>
+                        <div class="progress-step" id="step3">
+                            <div class="step-circle">3</div>
+                            <div class="step-label" data-translate="step_location">Location</div>
+                        </div>
+                        <div class="progress-line"></div>
+                        <div class="progress-step" id="step4">
+                            <div class="step-circle">4</div>
+                            <div class="step-label" data-translate="step_profile">Profile</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 1: Phone Number Entry -->
+                <div id="phoneStep" class="auth-step active">
+                    <p style="margin-bottom: var(--space-16); color: var(--color-text-secondary);" data-translate="phone_instruction">Enter your Indian mobile number to register or sign in</p>
+                    <form id="phoneForm">
+                        <div class="form-group">
+                            <label class="form-label" data-translate="phone_label">Mobile Number</label>
+                            <div style="display: flex; gap: var(--space-8);">
+                                <input type="text" value="+91" readonly style="width: 60px; padding: var(--space-12); border: 1px solid var(--color-border); border-radius: var(--radius-base); background: var(--color-secondary); text-align: center; font-weight: bold;">
+                                <input type="tel" id="phoneNumber" class="form-control" placeholder="9876543210" pattern="[0-9]{10}" maxlength="10" required style="flex: 1; font-size: var(--font-size-lg); letter-spacing: 1px;">
+                            </div>
+                            <small style="color: var(--color-text-secondary); margin-top: var(--space-4); display: block;">10-digit mobile number without country code</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; padding: var(--space-12) var(--space-24); font-size: var(--font-size-lg);">
+                            <i class="fas fa-paper-plane"></i>
+                            <span data-translate="send_otp">Send OTP</span>
+                        </button>
+                    </form>
+                    <div style="margin-top: var(--space-16); padding: var(--space-12); background: var(--color-bg-1); border-radius: var(--radius-base); text-align: center;">
+                        <button class="btn btn-secondary" id="guestModeBtn" style="width: 100%;">
+                            <i class="fas fa-user-secret"></i>
+                            <span data-translate="guest_mode">Continue as Guest (Demo)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: OTP Verification -->
+                <div id="otpStep" class="auth-step">
+                    <div style="text-align: center; margin-bottom: var(--space-24);">
+                        <i class="fas fa-mobile-alt" style="font-size: 3rem; color: var(--color-primary); margin-bottom: var(--space-12);"></i>
+                        <p style="color: var(--color-text-secondary);" data-translate="otp_sent">OTP sent to</p>
+                        <p style="font-weight: bold; font-size: var(--font-size-lg); margin-top: var(--space-4);" id="displayPhoneNumber"></p>
+                    </div>
+                    <div style="background: var(--color-bg-2); padding: var(--space-16); border-radius: var(--radius-base); margin-bottom: var(--space-16); text-align: center; border: 2px dashed var(--color-warning);">
+                        <p style="font-size: var(--font-size-sm); margin-bottom: var(--space-4); color: var(--color-text-secondary);">DEMO OTP (for testing):</p>
+                        <p style="font-size: var(--font-size-3xl); font-weight: bold; color: var(--color-primary); letter-spacing: 4px;" id="demoOTP">------</p>
+                    </div>
+                    <form id="otpForm">
+                        <div class="form-group">
+                            <label class="form-label" data-translate="enter_otp">Enter 6-digit OTP</label>
+                            <div class="otp-input-container">
+                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; padding: var(--space-12) var(--space-24); font-size: var(--font-size-lg);">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-translate="verify_otp">Verify OTP</span>
+                        </button>
+                    </form>
+                    <div style="text-align: center; margin-top: var(--space-16);">
+                        <button class="btn btn-secondary" id="resendOTP" disabled>
+                            <i class="fas fa-redo"></i>
+                            <span data-translate="resend_otp">Resend OTP</span>
+                            <span id="resendTimer">(30s)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3a: GPS Location Request (Auto-triggered) -->
+                <div id="locationStep" class="auth-step">
+                    <div style="text-align: center; margin-bottom: var(--space-24);">
+                        <i class="fas fa-crosshairs fa-spin" id="locationIcon" style="font-size: 3rem; color: var(--color-primary); margin-bottom: var(--space-12);"></i>
+                        <h3 id="locationTitle" data-translate="location_permission">🔍 Getting Your Location...</h3>
+                        <p id="locationSubtitle" style="color: var(--color-text-secondary); margin-top: var(--space-8);" data-translate="location_why">This will only take a moment...</p>
+                    </div>
+                    <div id="locationPermissionBox" style="padding: var(--space-12); background: var(--color-bg-8); border-radius: var(--radius-base); margin-bottom: var(--space-16); border: 2px solid var(--color-primary);">
+                        <p style="font-size: var(--font-size-sm); color: var(--color-text); text-align: center; font-weight: 500;">
+                            <i class="fas fa-info-circle" style="color: var(--color-primary);"></i>
+                            If your browser asks for permission, click "<strong style="color: var(--color-primary);">Allow</strong>"
+                        </p>
+                    </div>
+                    <div id="locationStatus" style="padding: var(--space-12); background: var(--color-bg-1); border-radius: var(--radius-base); margin-bottom: var(--space-16);">
+                        <div style="display: flex; align-items: center; gap: var(--space-12);">
+                            <i class="fas fa-crosshairs" style="font-size: var(--font-size-xl); color: var(--color-info);"></i>
+                            <div style="flex: 1;">
+                                <div id="locationStatusText" style="color: var(--color-text); font-size: var(--font-size-sm);">Requesting location access...</div>
+                            </div>
+                        </div>
+                        <div id="accuracyDisplay" style="display: none;">
+                            <div style="margin-bottom: var(--space-8);">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-4);">
+                                    <span style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">GPS Accuracy:</span>
+                                    <span id="accuracyValue" style="font-weight: bold;">-- m</span>
+                                </div>
+                                <div class="accuracy-bar">
+                                    <div id="accuracyProgress" class="accuracy-fill"></div>
+                                </div>
+                                <div style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-top: var(--space-4);">Target: &lt;50m for best results</div>
+                            </div>
+                            <div style="font-size: var(--font-size-sm); margin-top: var(--space-8);">
+                                <strong>Coordinates:</strong><br>
+                                <span id="coordsDisplay" style="font-family: monospace; color: var(--color-primary);">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: var(--space-16); display: flex; flex-direction: column; gap: var(--space-12);">
+                        <button id="retryLocationBtn" class="btn btn-primary" style="width: 100%; padding: var(--space-12) var(--space-24); font-size: var(--font-size-lg); display: none;">
+                            <i class="fas fa-redo"></i>
+                            <span>🔄 Retry Location Access</span>
+                        </button>
+                        <button id="continueAfterLocation" class="btn btn-primary" style="width: 100%; padding: var(--space-12) var(--space-24); font-size: var(--font-size-lg); display: none;" disabled>
+                            <i class="fas fa-arrow-right"></i>
+                            <span data-translate="continue">Continue to Dashboard</span>
+                        </button>
+                    </div>
+                    <div id="manualLocationOption" style="text-align: center; margin-top: var(--space-20); padding-top: var(--space-20); border-top: 2px solid var(--color-border);">
+                        <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: var(--space-12); font-weight: 500;">
+                            <i class="fas fa-map-pin"></i> Can't enable GPS location?
+                        </p>
+                        <button id="useManualLocationBtn" class="btn btn-secondary" style="width: 100%; padding: var(--space-12) var(--space-24); font-size: var(--font-size-base);">
+                            <i class="fas fa-edit"></i>
+                            <span>Enter Location Manually</span>
+                        </button>
+                        <p style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-top: var(--space-8);">Provide State, City &amp; optional details</p>
+                    </div>
+                    <div style="margin-top: var(--space-16); padding: var(--space-12); background: var(--color-bg-1); border-radius: var(--radius-base); text-align: center;">
+                        <p style="font-size: var(--font-size-xs); color: var(--color-text-secondary);" data-translate="location_tip">
+                            <i class="fas fa-lightbulb" style="color: var(--color-warning);"></i> <strong>Tip:</strong> For best accuracy, enable GPS and stay near a window or outdoors
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 3b: Manual Location Entry -->
+                <div id="manualLocationStep" class="auth-step">
+                    <div style="text-align: center; margin-bottom: var(--space-24);">
+                        <i class="fas fa-map-marked-alt" style="font-size: 3rem; color: var(--color-primary); margin-bottom: var(--space-12);"></i>
+                        <h3>📍 Enter Your Location</h3>
+                        <p style="color: var(--color-text-secondary); margin-top: var(--space-8);">We need your location for accurate flood predictions.<br>Please provide your location details below.</p>
+                    </div>
+                    
+                    <form id="manualLocationForm">
+                        <div class="form-group">
+                            <label class="form-label">State *</label>
+                            <select id="stateSelect" class="form-control" required>
+                                <option value="">Select your state...</option>
+                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                <option value="Assam">Assam</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                <option value="Goa">Goa</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                <option value="Jharkhand">Jharkhand</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Kerala">Kerala</option>
+                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Manipur">Manipur</option>
+                                <option value="Meghalaya">Meghalaya</option>
+                                <option value="Mizoram">Mizoram</option>
+                                <option value="Nagaland">Nagaland</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Sikkim">Sikkim</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Telangana">Telangana</option>
+                                <option value="Tripura">Tripura</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="Uttarakhand">Uttarakhand</option>
+                                <option value="West Bengal">West Bengal</option>
+                                <option value="Delhi">Delhi (NCT)</option>
+                                <option value="Jammu and Kashmir">Jammu &amp; Kashmir (UT)</option>
+                                <option value="Ladakh">Ladakh (UT)</option>
+                                <option value="Puducherry">Puducherry (UT)</option>
+                                <option value="Chandigarh">Chandigarh (UT)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">City / District *</label>
+                            <select id="citySelect" class="form-control" required>
+                                <option value="">First select your state...</option>
+                            </select>
+                            <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs); display: block; margin-top: var(--space-4);">
+                                Select the major city or district closest to you
+                            </small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Village / Locality (Optional)</label>
+                            <input type="text" id="localityInput" class="form-control" 
+                                   placeholder="e.g., Andheri, Gomtinagar, Jayanagar">
+                            <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs); display: block; margin-top: var(--space-4);">
+                                Your neighborhood or village name
+                            </small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Nearby Landmark (Optional)</label>
+                            <input type="text" id="landmarkInput" class="form-control" 
+                                   placeholder="e.g., Railway Station, Main Market, Hospital">
+                            <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs); display: block; margin-top: var(--space-4);">
+                                A well-known landmark near your location
+                            </small>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" style="width: 100%; padding: var(--space-12) var(--space-24); font-size: var(--font-size-lg);">
+                            <i class="fas fa-crosshairs"></i>
+                            <span>🎯 Get Coordinates &amp; Continue</span>
+                        </button>
+                    </form>
+                    
+                    <div style="text-align: center; margin-top: var(--space-16);">
+                        <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: var(--space-8);">OR</div>
+                        <button id="retryGPSFromManual" class="btn btn-secondary" style="width: 100%;">
+                            <i class="fas fa-redo"></i>
+                            <span>🔄 Try GPS Location Again</span>
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top: var(--space-16); padding: var(--space-12); background: var(--color-bg-1); border-radius: var(--radius-base); text-align: center;">
+                        <p style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">
+                            <i class="fas fa-info-circle" style="color: var(--color-primary);"></i>
+                            <strong>Why manual entry?</strong> If GPS is unavailable, we'll use your city's coordinates for flood predictions. You can update to GPS location anytime from your dashboard.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 4: Complete Profile -->
+                <div id="profileSetupStep" class="auth-step">
+                    <form id="profileSetupForm">
+                        <div class="form-group">
+                            <label class="form-label" data-translate="name_label">Full Name *</label>
+                            <input type="text" id="setupName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="language_preference">Preferred Language *</label>
+                            <select id="setupLanguage" class="form-control" required>
+                                <option value="en">English</option>
+                                <option value="hi">हिन्दी (Hindi)</option>
+                                <option value="ta">தமிழ் (Tamil)</option>
+                                <option value="te">తెలుగు (Telugu)</option>
+                                <option value="ml">മലയാളം (Malayalam)</option>
+                                <option value="or">ଓଡ଼ିଆ (Odia)</option>
+                                <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                                <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="avatar_select">Choose Avatar</label>
+                            <div class="avatar-selector">
+                                <label class="avatar-option">
+                                    <input type="radio" name="avatar" value="user" checked>
+                                    <i class="fas fa-user"></i>
+                                </label>
+                                <label class="avatar-option">
+                                    <input type="radio" name="avatar" value="user-circle">
+                                    <i class="fas fa-user-circle"></i>
+                                </label>
+                                <label class="avatar-option">
+                                    <input type="radio" name="avatar" value="user-shield">
+                                    <i class="fas fa-user-shield"></i>
+                                </label>
+                                <label class="avatar-option">
+                                    <input type="radio" name="avatar" value="user-astronaut">
+                                    <i class="fas fa-user-astronaut"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; padding: var(--space-12) var(--space-24); font-size: var(--font-size-lg);">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-translate="complete_registration">Complete Registration</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      // Verify Chart.js is loaded
+      console.log('Chart.js loaded:', typeof Chart !== 'undefined');
+      if (typeof Chart === 'undefined') {
+        console.error('Chart.js failed to load!');
+      } else {
+        console.log('Chart.js version:', Chart.version);
+      }
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>
